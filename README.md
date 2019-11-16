@@ -14,3 +14,18 @@ With the advancement of technology, cell phones have become very popular, and th
 The similar web site is <https://www.phonearena.com>. We use 1.4 million cell phone reviews dataset on Kaggle to build our project. The dateset can be found on <https://www.kaggle.com/masaladata/14-million-cell-phone-reviews>. In this dataset, it includes 11 fields, including `phone_url`, `date`, `language`, `country`, `source`, `domain`, `score`, `score_max`, `extract`, `author` and `product`. These different elements will form diversified cell phone reviews which can help people choose the phone that works best for them from different views.
 
 Besides, we have more interactions in this system like: log in and log out, give "likes" to interested phones, and write down their own cell phone reviews.
+
+## UI Design
+
+The first image is our home page of cell phone review system. We put our website name as well as login and log out function in the navigation bar. Then we have 4 selectors - "Manufacturer", "Carrier", "Source" and "Language" below, which allows us to filter specific phone reviews. Each filter has several attributes to select. Besides, if you don’t have any specific phone reviews to search or you just want to randomly scan on one phone review, you can also click on the phone images below to enter the detail page.
+
+For the second image, it is our log in page. In this page, you need to type in your email address and password to sign in. We also add a "Remember me" button to your convenience. 
+
+For the third image, it is still our home page after logging in. The difference between two web pages is that when user logs in to his/her account, the location where "Log in" is displayed will show a user icon, and when you click on the icon, a drop-down menu will appear, showing "Log out" option.
+
+For the fourth image, it is our detail page when you click on the phone image in home page. In this page, it shows detailed phone reviews including phone images, phone brands, rank scores, authors, updating time, and detailed reviews. Below the reviews table, you can write down your own review as well as score the cell phone. In the end, you can submit your review by clicking the "Submit" button below the text area or cancel your review by clicking the "Cancel" button.
+
+![image 1](docs/img/ui-design-1.png)
+![image 2](docs/img/ui-design-2.png)
+![image 3](docs/img/ui-design-3.png)
+![image 4](docs/img/ui-design-4.png)
