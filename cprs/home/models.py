@@ -25,7 +25,9 @@ class Rating(models.Model):
 class Phone(models.Model):
     name = models.CharField(max_length=200)
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
-    rating = models.ManyToManyField(Rating)
+    rating = models.ManyToManyField(Rating, through='Review')
+    # base64 encoded image data
+    image = models.TextField()
 
 
 class Review(models.Model):
