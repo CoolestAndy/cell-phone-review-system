@@ -166,7 +166,11 @@
                                     <a class="btn btn-danger btn-sm" href="#" id="close-review-box"
                                        style="display:none; margin-right: 10px;">
                                         <span class="glyphicon glyphicon-remove"></span>Cancel</a>
-                                    <button class="btn btn-success btn-lg" type="submit">Save</button>
+                                    {% if user.is_authenticated %}
+                                        <button class="btn btn-success btn-lg" type="submit">Submit</button>
+                                    {% else %}
+                                        <a class="btn btn-success btn-lg" href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}" onclick="alert('Please login.')">Submit</a>
+                                    {% endif %}
                                 </div>
                             </form>
                         </div>
