@@ -1,87 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base_menu.html" %}
 
-<head>
-    {% load static %}
-    <link rel="icon" type="image/x-icon" href="{% static 'img/favorite.ico' %}">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Cell Phone Review System</title>
-</head>
+{% block head %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+{% endblock %}
 
-<body>
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
-            <div class="nav navbar-nav navbar-center">
-                <a class="navbar-brand" href="#">Cell Phone Review System</a>
-            </div>
-            <div>
-                {% if not user.is_authenticated %}
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="{% url 'login' %}?next={% url 'home:home' %}">Log in</a></li>
-                    </ul>
+{% block content %}
+<form class="selector">
+    <div>
+        <label for="brand">Brand</label>
+        <select name="brand">
+            <option value="">Brand</option>
+            {% for brand in brands %}
+                {% if filters and filters.brand == brand.name %}
+                    <option value="{{ brand.name }}" selected>{{ brand.name }}</option>
                 {% else %}
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fas fa-user"></i>
-                                <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="{% url 'logout' %}?next={% url 'home:home' %}">Log out</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <option value="{{ brand.name }}">{{ brand.name }}</option>
                 {% endif %}
-            </div>
-        </div>
-    </nav>
-    <main>
-        <form class="selector">
-            <div>
-                <label for="brand">Brand</label>
-                <select name="brand">
-                    <option value="">Brand</option>
-                    {% for brand in brands %}
-                        {% if filters and filters.brand == brand.name %}
-                            <option value="{{ brand.name }}" selected>{{ brand.name }}</option>
-                        {% else %}
-                            <option value="{{ brand.name }}">{{ brand.name }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-            <div>
-                <label for="rating">Rating</label>
-                <input name="rating" type="range" min="0" max="5" value="{{ filters.rating }}" step="0.1">
-            </div>
-            <div>
-                <label for="min_price">Price</label>
-                <input name="min_price" type="number" min="0" value="{{ filters.min_price }}">
-                <p> - </p>
-                <input name="max_price" type="number" min="0" value="{{ filters.max_price }}">
-            </div>
-            <button>Filter</button>
-            <a id="reset" href="/">Reset</a>
-        </form>
-        <div class="gallery" id="products">
-            {% for item in items %}
-                <div>
-                    <img src="{{ item.image }}" alt="{{ item.title }}">
-                    <a href="{% url 'home:details' item.asin %}">{{ item.title }}</a>
-                </div>
             {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="rating">Rating</label>
+        <input name="rating" type="range" min="0" max="5" value="{{ filters.rating }}" step="0.1">
+    </div>
+    <div>
+        <label for="min_price">Price</label>
+        <input name="min_price" type="number" min="0" value="{{ filters.min_price }}">
+        <p> - </p>
+        <input name="max_price" type="number" min="0" value="{{ filters.max_price }}">
+    </div>
+    <button>Filter</button>
+    <a id="reset" href="/">Reset</a>
+</form>
+<div class="gallery" id="products">
+    {% for item in items %}
+        <div>
+            <img src="{{ item.image }}" alt="{{ item.title }}">
+            <a href="{% url 'home:details' item.asin %}">{{ item.title }}</a>
         </div>
-    </main>
-    <footer class="footer">
-        <div class="container">
-            <span class="text-muted">SI-664 Cell Phone Review System</span>
-        </div>
-    </footer>
-</body>
-
-</html>
+    {% endfor %}
+</div>
+{% endblock %}

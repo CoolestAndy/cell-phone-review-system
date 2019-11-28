@@ -1,27 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base_menu.html" %}
 
-<head>
-    {% load static %}
-    <link rel="icon" type="image/x-icon" href="{% static 'img/favorite.ico' %}">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/details.css' %}">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Cell Phone Review System</title>
-</head>
+{% block head %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/details.css' %}">
+{% endblock %}
 
-<body>
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
-            <div class="nav navbar-nav navbar-center">
-                <a class="navbar-brand" href="{% url 'home:home' %}">Cell Phone Review System</a>
-            </div>
-        </div>
-    </nav>
-
+{% block content %}
     <div class="container">
         <div class="row">
             <div class="col-sm-4 img-wrapper magnifier-thumb-wrapper">
@@ -145,11 +129,4 @@
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <span class="text-muted">SI-664 Cell Phone Review System</span>
-        </div>
-    </footer>
-</body>
-
-</html>
+{% endblock %}
