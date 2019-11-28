@@ -3,6 +3,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import *
 
 class HomeView(View):
@@ -59,8 +60,10 @@ class DetailsView(View):
         }
         return render(request, self.template, ctx)
 
+
+class CommentCreateView(LoginRequiredMixin, View):
     def post(self, request, asin):
-        review = Review(
+        comment = Review(
             item=Item.objects.get(asin=asin),
             author=self.request.user,
             rating=Rating.objects.get_or_create(rating=int(request.POST.get('rating')))[0],
@@ -69,5 +72,14 @@ class DetailsView(View):
             date=datetime.now(),
             helpful_votes=0
         )
-        review.save()
+        comment.save()
+        return redirect(reverse('home:details', args=[asin]))
+
+
+class CommentDeleteView(LoginRequiredMixin, View):
+    def post(self, request, asin):
+        reviews = Review.objects.filter(id=request.POST.get('review_id'))
+        for review in reviews:
+            if self.request.user == review.author:
+                review.delete()
         return redirect(reverse('home:details', args=[asin]))

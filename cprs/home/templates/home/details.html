@@ -115,6 +115,13 @@
                             <div class="col-sm-2">
                                 <div class="review-block-name">{{ review.author.username|safe }}</div>
                                 <div class="review-block-date">{{ review.date }}</div>
+                                {% if review.author.id == user.id %}
+                                    <form class="review-block-name" action="{% url 'home:comment_delete' item.asin %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="review_id" value="{{ review.id }}">
+                                        <a href="#" onclick="confirm('Are you sure you want to delete the comment?') && this.parentNode.submit();">Delete</a>
+                                    </form>
+                                {% endif %}
                             </div>
                             <div class="col-sm-10">
                                 {% for rating in ratings.ticks %}
@@ -146,7 +153,7 @@
 
                     <div class="row" id="post-review-box" style="display:none;">
                         <div class="col-md-12">
-                            <form id="post-review-form" accept-charset="UTF-8" method="post">
+                            <form id="post-review-form" accept-charset="UTF-8" action="{% url 'home:comment_create' item.asin %}" method="post">
                                 {% csrf_token %}
                                 <input id="ratings-hidden" name="rating" type="hidden">
                                 <input type="text" class="post-review-title form-control animated" name="title"
