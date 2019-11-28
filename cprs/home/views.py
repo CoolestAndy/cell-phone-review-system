@@ -7,9 +7,30 @@ class HomeView(View):
     template = 'home/index.html'
 
     def get(self, request):
+        brand_filter = request.GET.get("brand", "")
+        rating_filter = request.GET.get("rating", "")
+        min_price_filter = request.GET.get("min_price", "")
+        max_price_filter = request.GET.get("max_price", "")
+        items = []
+        for item in Item.objects.all():
+            if brand_filter and item.brand.name != brand_filter:
+                continue
+            if rating_filter and item.average_rating < float(rating_filter):
+                continue
+            if min_price_filter and (item.max_price is None or item.max_price < float(min_price_filter)):
+                continue
+            if max_price_filter and (max_price_filter is None or item.min_price > float(max_price_filter)):
+                continue
+            items.append(item)
         ctx = {
             'brands': Brand.objects.all(),
-            'items': Item.objects.all()
+            'items': items,
+            'filters': {
+                'brand': brand_filter,
+                'rating': rating_filter,
+                'min_price': min_price_filter,
+                'max_price': max_price_filter
+            }
         }
         return render(request, self.template, ctx)
 

@@ -22,29 +22,33 @@
         </div>
     </nav>
     <main>
-        <div class="selector">
+        <form class="selector">
             <div>
                 <label for="brand">Brand</label>
-                <select id="brand">
+                <select name="brand">
                     <option value="">Brand</option>
                     {% for brand in brands %}
-                        <option value="{{ brand.name }}">{{ brand.name }}</option>
+                        {% if filters and filters.brand == brand.name %}
+                            <option value="{{ brand.name }}" selected>{{ brand.name }}</option>
+                        {% else %}
+                            <option value="{{ brand.name }}">{{ brand.name }}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
             <div>
                 <label for="rating">Rating</label>
-                <input type="range" min="0" max="5" value="0" step="0.1" id="rating">
+                <input name="rating" type="range" min="0" max="5" value="{{ filters.rating }}" step="0.1">
             </div>
             <div>
-                <label for="minprice">Price</label>
-                <input type="number" min="0" value="" id="minprice">
+                <label for="min_price">Price</label>
+                <input name="min_price" type="number" min="0" value="{{ filters.min_price }}">
                 <p> - </p>
-                <input type="number" min="0" value="" id="maxprice">
+                <input name="max_price" type="number" min="0" value="{{ filters.max_price }}">
             </div>
-            <button id="filter">Filter</button>
-            <button id="reset">Reset</button>
-        </div>
+            <button>Filter</button>
+            <a id="reset" href="/">Reset</a>
+        </form>
         <div class="selector" id="products">
             {% for item in items %}
                 <div>
