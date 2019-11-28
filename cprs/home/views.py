@@ -1,5 +1,7 @@
 from collections import Counter
-from django.shortcuts import render
+from datetime import datetime
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
 from .models import *
 
@@ -34,11 +36,6 @@ class HomeView(View):
         }
         return render(request, self.template, ctx)
 
-class SignInView(View):
-    template = 'home/login.html'
-
-    def get(self, request):
-        return render(request, self.template)
 
 class DetailsView(View):
     template = 'home/details.html'
@@ -61,3 +58,16 @@ class DetailsView(View):
             'reviews': reviews
         }
         return render(request, self.template, ctx)
+
+    def post(self, request, asin):
+        review = Review(
+            item=Item.objects.get(asin=asin),
+            author=self.request.user,
+            rating=Rating.objects.get_or_create(rating=int(request.POST.get('rating')))[0],
+            title=request.POST.get('title'),
+            body=request.POST.get('body'),
+            date=datetime.now(),
+            helpful_votes=0
+        )
+        review.save()
+        return redirect(reverse('home:details', args=[asin]))
