@@ -35,7 +35,7 @@ class HomeView(View):
         return render(request, self.template, ctx)
 
 class SignInView(View):
-    template = 'home/sign-in.html'
+    template = 'home/login.html'
 
     def get(self, request):
         return render(request, self.template)
