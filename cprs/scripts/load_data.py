@@ -27,6 +27,7 @@ def run():
                 brand=brand,
                 carrier=carrier,
                 title=row[2],
+                url=row[3],
                 image=row[4],
                 average_rating=row[5],
                 total_reviews=row[7],

@@ -24,6 +24,7 @@ class Item(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     carrier = models.ForeignKey(Carrier, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
+    url = models.URLField()
     image = models.URLField()
     ratings = models.ManyToManyField(Rating, through='Review')
     average_rating = models.DecimalField(max_digits=2, decimal_places=1)

@@ -8,7 +8,7 @@ class HomeView(View):
 
     def get(self, request):
         brand_filter = request.GET.get("brand", "")
-        rating_filter = request.GET.get("rating", "")
+        rating_filter = request.GET.get("rating", 0)
         min_price_filter = request.GET.get("min_price", "")
         max_price_filter = request.GET.get("max_price", "")
         items = []
