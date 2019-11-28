@@ -3,6 +3,12 @@
 {% block head %}
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/details.css' %}">
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.webui-popover.min.css' %}">
+{% load static %}
+<script type="text/javascript" src="{% static 'js/jquery.webui-popover.min.js' %}"></script>
+{% load static %}
+<script type="text/javascript" src="{% static 'js/details.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -129,4 +135,37 @@
         </div>
     </div>
 
+    <div class="container">
+        <div class="row" style="margin-top:40px;">
+            <div class="col-md-12">
+                <div class="well well-sm">
+                    <div class="text-right">
+                        <a class="btn btn-success btn-green" id="open-review-box">Leave a
+                            Review</a>
+                    </div>
+
+                    <div class="row" id="post-review-box" style="display:none;">
+                        <div class="col-md-12">
+                            <form id="post-review-form" accept-charset="UTF-8" method="post">
+                                {% csrf_token %}
+                                <input id="ratings-hidden" name="rating" type="hidden">
+                                <input type="text" class="post-review-title form-control animated" name="title"
+                                          placeholder="Enter your title here..." required>
+                                <textarea class="form-control animated" cols="50" id="new-review" name="body"
+                                          placeholder="Enter your review here..." rows="5" required></textarea>
+
+                                <div class="text-right">
+                                    <div id="post-rating-stars" class="stars starrr" data-rating="0"></div>
+                                    <a class="btn btn-danger btn-sm" href="#" id="close-review-box"
+                                       style="display:none; margin-right: 10px;">
+                                        <span class="glyphicon glyphicon-remove"></span>Cancel</a>
+                                    <button class="btn btn-success btn-lg" type="submit">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

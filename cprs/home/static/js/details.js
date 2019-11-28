@@ -34,4 +34,19 @@ $(function () {
     $('.starrr').on('starrr:change', function (e, value) {
         ratingsField.val(value);
     });
+
+    $('#post-review-form').submit(function () {
+        if(!$('#ratings-hidden').val()) {
+            $('#post-rating-stars > span:nth-child(5)').webuiPopover('show');
+            return false;
+        }
+        return true;
+    });
+
+    $('#post-rating-stars > span:nth-child(5)').webuiPopover({
+        trigger: 'manual',
+        content: 'Please select a rating.',
+        animation:'pop',
+        autoHide: true
+    });
 });

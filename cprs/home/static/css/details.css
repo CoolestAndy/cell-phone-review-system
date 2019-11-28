@@ -1,7 +1,3 @@
-body {
-    width: 100%;
-}
-
 #title {
     margin-top: 20px;
     margin-bottom: 30px;
@@ -71,11 +67,19 @@ body {
     font-size:13px;
 }
 
-.footer {
-    bottom: 0;
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
-    background-color: #f5f5f5;
-    text-align: center;
+.post-review-title {
+    margin-bottom: 0.5em;
+}
+
+.animated {
+    -webkit-transition: height 0.2s;
+    -moz-transition: height 0.2s;
+    transition: height 0.2s;
+}
+
+.stars
+{
+    margin: 20px 0;
+    font-size: 24px;
+    color: #d17581;
 }
