@@ -33,3 +33,39 @@ For the fourth image, it is our detail page when you click on the phone image in
 ## Data Models
 
 ![models](docs/img/models.svg)
+
+## Installation
+
+1. Install dependencies.
+
+    ```bash
+    cd cprs
+    pip install -r requirements.txt
+    ```
+
+2. Migrate database.
+
+    ```bash
+    python manage.py migrate
+    ```
+
+3. Add GitHub social login key
+    - Go to <https://github.com/settings/developers>
+    - Add a `New OAuth2 App`
+    - If you are running on localhost, here are some settings:
+        > Application name: Cell Phone Review System  
+        > Homepage URL: <http://localhost/>  
+        > Authorization callback URL: <http://localhost/oauth/complete/github/>
+
+      If you are running on your server, here are some settings:
+        > Application name: Cell Phone Review System  
+        > Homepage URL: <http://your-server-domain/>  
+        > Authorization callback URL: <http://your-server-domain/oauth/complete/github/>
+
+      Please note the difference between **http** and **https**. If your server is connected using `https` protocol, please replace all `http` in the address with `https`. Using the wrong protocol will result in failure to log in.
+4. Copy `Client ID` and `Client Secret` to `cprs/cprs/github_settings.py`.
+5. Start server in debug mode.
+
+    ```bash
+    python manage.py runserver 0.0.0.0:8000
+    ```
