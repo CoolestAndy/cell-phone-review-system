@@ -1,7 +1,13 @@
 main .selector {
     display: grid;
-    grid-template-columns: 1fr 1fr 1.5fr 100px 70px;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr auto auto;
     margin: 1em 2em;
+}
+
+main .sort {
+    display: flex;
+    flex-direction: row;
+    margin: 0.5em 2.2em;
 }
 
 main .gallery {
@@ -13,7 +19,7 @@ main .gallery {
 main .selector div {
     display: flex;
     flex-direction: row;
-    padding: 0.5em 1em;
+    padding: 0.5em 0.2em;
 }
 
 main .selector label {
@@ -33,24 +39,32 @@ main .selector input {
 }
 
 main .selector button {
-    margin: auto 0.5em;
+    margin: auto 0.3em;
+    width: 100px;
 }
 
-#reset {
-    text-align: center;
-    margin: auto auto;
+main .sort label {
+    margin: auto 0.5em;
 }
 
 #products div {
     width: 100%;
-    height: 20em;
-    border: 1px solid black;
+    height: 400px;
     padding: 1em;
     display: grid;
     grid-template-rows: 1fr auto;
 }
 
+#products a {
+    margin: 0.5em 0;
+}
+
 #products p {
+    line-height: 1;
+    margin: 0.2em 0;
+}
+
+#products #img {
     text-align: center;
 }
 

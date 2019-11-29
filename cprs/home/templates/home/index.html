@@ -3,41 +3,107 @@
 {% block head %}
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-slider.min.css' %}">
+{% load static %}
+<script type="text/javascript" src="{% static 'js/bootstrap-slider.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-<form class="selector">
-    <div>
-        <label for="brand">Brand</label>
-        <select name="brand">
-            <option value="">Brand</option>
-            {% for brand in brands %}
-                {% if filters and filters.brand == brand.name %}
-                    <option value="{{ brand.name }}" selected>{{ brand.name }}</option>
-                {% else %}
-                    <option value="{{ brand.name }}">{{ brand.name }}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
+<form>
+    <div class="selector">
+        <div>
+            <label for="keywords">Keywords</label>
+            <input name="keywords" id="keywords" type="text" value="{{ filters.keywords }}">
+        </div>
+        <div>
+            <label for="brand">Brand</label>
+            <select name="brand">
+                <option value=""></option>
+                {% for brand in brands %}
+                    {% if filters and filters.brand == brand.name %}
+                        <option value="{{ brand.name }}" selected>{{ brand.name }}</option>
+                    {% else %}
+                        <option value="{{ brand.name }}">{{ brand.name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="carrier">Carrier</label>
+            <select name="carrier">
+                <option value=""></option>
+                {% for carrier in carriers %}
+                    {% if filters and filters.carrier == carrier.name %}
+                        <option value="{{ carrier.name }}" selected>{{ carrier.name }}</option>
+                    {% else %}
+                        <option value="{{ carrier.name }}">{{ carrier.name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="min_price">Price</label>
+            <input name="min_price" type="number" min="0" value="{{ filters.min_price }}">
+            <p> - </p>
+            <input name="max_price" type="number" min="0" value="{{ filters.max_price }}">
+        </div>
+        <button class="btn btn-primary" type="submit">
+            <i class="fas fa-search"></i>&nbsp;Search
+        </button>
+        <button class="btn btn-secondary" type="reset" onclick="window.location.href = window.location.href.split('?')[0]">
+            <i class="fas fa-undo"></i>&nbsp;Reset
+        </button>
     </div>
-    <div>
-        <label for="rating">Rating</label>
-        <input name="rating" type="range" min="0" max="5" value="{{ filters.rating }}" step="0.1">
+    <div class="sort">
+        <label>Sorted by</label>
+        <input name="sort" id="sort" type="hidden" value="">
+        <ul class="nav nav-pills">
+            {% if sort == "name-ascending" %}
+                <button class="btn btn-info" onclick="$('#sort').val('name-descending')"><i class="fas fa-sort-alpha-down"></i>&nbsp;Name</button>
+            {% elif sort == "name-descending" %}
+                <button class="btn btn-info" onclick="$('#sort').val('name-ascending')"><i class="fas fa-sort-alpha-down-alt"></i>&nbsp;Name</button>
+            {% else %}
+                <button class="btn btn-secondary" onclick="$('#sort').val('name-ascending')"><i class="fas fa-sort-alpha-down"></i>&nbsp;Name</button>
+            {% endif %}
+
+            {% if sort == "reviewers-ascending" %}
+                <button class="btn btn-info" onclick="$('#sort').val('reviewers-descending')"><i class="fas fa-sort-amount-down-alt"></i>&nbsp;Reviewers</button>
+            {% elif sort == "reviewers-descending" %}
+                <button class="btn btn-info" onclick="$('#sort').val('reviewers-ascending')"><i class="fas fa-sort-amount-down"></i>&nbsp;Reviewers</button>
+            {% else %}
+                <button class="btn btn-secondary" onclick="$('#sort').val('reviewers-descending')"><i class="fas fa-sort-amount-down"></i>&nbsp;Reviewers</button>
+            {% endif %}
+
+            {% if sort == "rating-ascending" %}
+                <button class="btn btn-info" onclick="$('#sort').val('rating-descending')"><i class="fas fa-sort-numeric-down"></i>&nbsp;Rating</button>
+            {% elif sort == "rating-descending" %}
+                <button class="btn btn-info" onclick="$('#sort').val('rating-ascending')"><i class="fas fa-sort-numeric-down-alt"></i>&nbsp;Rating</button>
+            {% else %}
+                <button class="btn btn-secondary" onclick="$('#sort').val('rating-descending')"><i class="fas fa-sort-numeric-down-alt"></i>&nbsp;Rating</button>
+            {% endif %}
+
+            {% if sort == "price-ascending" %}
+                <button class="btn btn-info" onclick="$('#sort').val('price-descending')"><i class="fas fa-sort-numeric-down"></i>&nbsp;Price</button>
+            {% elif sort == "price-descending" %}
+                <button class="btn btn-info" onclick="$('#sort').val('price-ascending')"><i class="fas fa-sort-numeric-down-alt"></i>&nbsp;Price</button>
+            {% else %}
+                <button class="btn btn-secondary" onclick="$('#sort').val('price-ascending')"><i class="fas fa-sort-numeric-down"></i>&nbsp;Price</button>
+            {% endif %}
+        </ul>
     </div>
-    <div>
-        <label for="min_price">Price</label>
-        <input name="min_price" type="number" min="0" value="{{ filters.min_price }}">
-        <p> - </p>
-        <input name="max_price" type="number" min="0" value="{{ filters.max_price }}">
-    </div>
-    <button>Filter</button>
-    <a id="reset" href="/">Reset</a>
 </form>
+
 <div class="gallery" id="products">
     {% for item in items %}
         <div>
-            <img src="{{ item.image }}" alt="{{ item.title }}">
+            <a id="img" href="{% url 'home:details' item.asin %}"><img src="{{ item.image }}" alt="{{ item.title }}"></a>
             <a href="{% url 'home:details' item.asin %}">{{ item.title }}</a>
+            {% if item.min_price and item.max_price %}
+                <p><b>Price</b>: ${{ item.min_price }} - ${{ item.max_price }}</p>
+            {% endif %}
+            <p><b>Average Rating</b>: {{ item.average_rating }}</p>
+            <p><b>Total Reviewers</b>: {{ item.total_reviews }}</p>
         </div>
     {% endfor %}
 </div>
