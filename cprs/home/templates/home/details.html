@@ -1,21 +1,19 @@
 {% extends "base_menu.html" %}
 
 {% block head %}
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/details.css' %}">
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.webui-popover.min.css' %}">
-{% load static %}
-<script type="text/javascript" src="{% static 'js/jquery.webui-popover.min.js' %}"></script>
-{% load static %}
-<script type="text/javascript" src="{% static 'js/details.js' %}"></script>
+    {% load static %}
+    {# jQuery WebUI Popover #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.webui-popover.min.css' %}">
+    <script type="text/javascript" src="{% static 'js/jquery.webui-popover.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/details.css' %}">
+    <script type="text/javascript" src="{% static 'js/details.js' %}"></script>
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row">
             <div class="col-sm-4 img-wrapper magnifier-thumb-wrapper">
-                <img class="img-responsive" id="img" src="{{ item.image }}">
+                <img class="img-responsive" id="img" src="{{ item.image }}" alt="{{ item.title }}">
             </div>
             <div class="col-sm-8" id="preview">
                 <a href="{{ item.url }}"><h2 id="title">{{ item.title }}</h2></a>
@@ -28,7 +26,7 @@
                                 <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
                             </button>
                         {% else %}
-                            <button type="button" class="btn btn-default btn-sm" aria-label="Left Align">
+                            <button type="button" class="btn btn-default btn-grey btn-sm" aria-label="Left Align">
                                 <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
                             </button>
                         {% endif %}
@@ -128,7 +126,7 @@
                                     {% if review.rating.rating > rating %}
                                         <button class="btn btn-warning btn-xs" type="button" aria-label="Left Align"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></button>
                                     {% else %}
-                                        <button class="btn btn-default btn-xs" type="button" aria-label="Left Align"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></button>
+                                        <button class="btn btn-default btn-grey btn-xs" type="button" aria-label="Left Align"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></button>
                                     {% endif %}
                                 {% endfor %}
                                 <div class="review-block-title">{{ review.title|safe }}</div>
@@ -156,9 +154,11 @@
                             <form id="post-review-form" accept-charset="UTF-8" action="{% url 'home:comment_create' item.asin %}" method="post">
                                 {% csrf_token %}
                                 <input id="ratings-hidden" name="rating" type="hidden">
-                                <input type="text" class="post-review-title form-control animated" name="title"
+                                <label for="post-review-title" hidden></label>
+                                <input id="post-review-title" type="text" class="post-review-title form-control animated" name="title"
                                           placeholder="Enter your title here..." required>
-                                <textarea class="form-control animated" cols="50" id="new-review" name="body"
+                                <label for="post-review-body" hidden></label>
+                                <textarea class="form-control animated" cols="50" id="post-review-body" name="body"
                                           placeholder="Enter your review here..." rows="5" required></textarea>
 
                                 <div class="text-right">

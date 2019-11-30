@@ -64,7 +64,7 @@ main .sort label {
     margin: 0.2em 0;
 }
 
-#products #img {
+#products .img-link {
     text-align: center;
 }
 

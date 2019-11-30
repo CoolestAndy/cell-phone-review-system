@@ -4,17 +4,17 @@ var __slice = [].slice; (function (e, t) { var n; n = function () { function t(t
 
 $(function () {
 
-    $('#new-review').autosize({ append: "\n" });
+    $('#post-review-body').autosize({ append: "\n" });
 
     var reviewBox = $('#post-review-box');
-    var newReview = $('#new-review');
+    var newReview = $('#post-review-body');
     var openReviewBtn = $('#open-review-box');
     var closeReviewBtn = $('#close-review-box');
     var ratingsField = $('#ratings-hidden');
 
     openReviewBtn.click(function (e) {
         reviewBox.slideDown(400, function () {
-            $('#new-review').trigger('autosize.resize');
+            $('#post-review-body').trigger('autosize.resize');
             newReview.focus();
         });
         openReviewBtn.fadeOut(100);
