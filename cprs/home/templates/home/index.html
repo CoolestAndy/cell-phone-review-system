@@ -99,7 +99,7 @@
         <div>
             <a id="img" href="{% url 'home:details' item.asin %}"><img src="{{ item.image }}" alt="{{ item.title }}"></a>
             <a href="{% url 'home:details' item.asin %}">{{ item.title }}</a>
-            {% if item.min_price and item.max_price %}
+            {% if item.min_price is not None and item.max_price is not None %}
                 <p><b>Price</b>: ${{ item.min_price }} - ${{ item.max_price }}</p>
             {% endif %}
             <p><b>Average Rating</b>: {{ item.average_rating }}</p>

@@ -43,9 +43,9 @@ class HomeView(View):
         elif sort_key == 'rating':
             items.sort(key=lambda item: item.average_rating, reverse=order == 'descending')
         elif sort_key == 'price' and order == 'ascending':
-            items.sort(key=lambda item: item.min_price if item.min_price else 0xffffff)
+            items.sort(key=lambda item: item.min_price if item.min_price is not None else 0xffffff)
         elif sort_key == 'price' and order == 'descending':
-            items.sort(key=lambda item: item.max_price if item.max_price else 0, reverse=True)
+            items.sort(key=lambda item: item.max_price if item.max_price is not None else 0, reverse=True)
 
     def get(self, request):
         # filter
