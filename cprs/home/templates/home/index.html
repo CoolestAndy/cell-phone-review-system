@@ -55,6 +55,14 @@
         <label>Sorted by</label>
         <input name="sort" id="sort" type="hidden" value="">
         <div class="nav nav-pills">
+            {% if sort == "relevance-ascending" %}
+                <button class="btn btn-info" onclick="$('#sort').val('relevance-descending')"><i class="fas fa-sort-amount-down-alt"></i>&nbsp;Relevance</button>
+            {% elif sort == "relevance-descending" %}
+                <button class="btn btn-info" onclick="$('#sort').val('relevance-ascending')"><i class="fas fa-sort-amount-down"></i>&nbsp;Relevance</button>
+            {% else %}
+                <button class="btn btn-secondary" onclick="$('#sort').val('relevance-descending')"><i class="fas fa-sort-amount-down"></i>&nbsp;Relevance</button>
+            {% endif %}
+
             {% if sort == "name-ascending" %}
                 <button class="btn btn-info" onclick="$('#sort').val('name-descending')"><i class="fas fa-sort-alpha-down"></i>&nbsp;Name</button>
             {% elif sort == "name-descending" %}

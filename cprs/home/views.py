@@ -1,6 +1,7 @@
 from collections import Counter
 from datetime import datetime
 
+from django.apps import apps
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -11,19 +12,11 @@ from .models import *
 
 class HomeView(View):
     template = 'home/index.html'
-
-    def search_keywords(self, document, query):
-        document = document.lower()
-        for keyword in query.split(' '):
-            if keyword.lower() not in document:
-                return False
-        return True
+    searcher = apps.get_app_config("home").item_searcher
 
     def filter_items(self, items, filters):
         filtered_items = []
         for item in items:
-            if filters['keywords'] and not self.search_keywords(item.title, filters['keywords']):
-                continue
             if filters['brand'] and item.brand.name != filters['brand']:
                 continue
             if filters['carrier'] and item.carrier.name != filters['carrier']:
@@ -56,19 +49,36 @@ class HomeView(View):
             'min_price': request.GET.get("min_price", ""),
             'max_price': request.GET.get("max_price", "")
         }
-        items = self.filter_items(Item.objects.all(), filters)
+
+        if filters['keywords']:
+            items = self.searcher.search(filters['keywords'])
+        else:
+            items = Item.objects.all()
+
+        items = self.filter_items(items, filters)
 
         # sort
         sort = request.GET.get("sort", "")
-        sort_key, order = sort.split('-') if '-' in sort else ('', '')
-        self.sort_items(items, sort_key, order)
+        if '-' in sort:
+            sort_key, sort_order = sort.split('-')
+        elif filters['keywords']:
+            sort_key, sort_order = 'relevance', 'descending'
+        else:
+            sort_key, sort_order = '', ''
+
+        print(sort_key, sort_order)
+
+        if sort_key == 'relevance' and sort_order == 'ascending':
+            items.reverse()
+        else:
+            self.sort_items(items, sort_key, sort_order)
 
         ctx = {
             'brands': Brand.objects.all(),
             'carriers': Carrier.objects.all(),
             'items': items,
             'filters': filters,
-            'sort': sort
+            'sort': sort_key + '-' + sort_order
         }
         return render(request, self.template, ctx)
 
