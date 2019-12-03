@@ -50,12 +50,9 @@ class HomeView(View):
             'max_price': request.GET.get("max_price", "")
         }
 
+        items = self.filter_items(Item.objects.all(), filters)
         if filters['keywords']:
-            items = self.searcher.search(filters['keywords'])
-        else:
-            items = Item.objects.all()
-
-        items = self.filter_items(items, filters)
+            items = self.searcher.search(items, filters['keywords'])
 
         # sort
         sort = request.GET.get("sort", "")
@@ -65,8 +62,6 @@ class HomeView(View):
             sort_key, sort_order = 'relevance', 'descending'
         else:
             sort_key, sort_order = '', ''
-
-        print(sort_key, sort_order)
 
         if sort_key == 'relevance' and sort_order == 'ascending':
             items.reverse()
@@ -85,10 +80,14 @@ class HomeView(View):
 
 class DetailsView(View):
     template = 'home/details.html'
+    searcher = apps.get_app_config("home").review_searcher
 
     def get(self, request, asin):
         item = Item.objects.get(asin=asin)
         reviews = Review.objects.filter(item=item)
+        keywords = request.GET.get("keywords", "")
+        if keywords:
+            reviews = self.searcher.search(reviews, keywords)
         rating_count = Counter(item.ratings.all())
         rating_count = { rating.rating: count for rating, count in rating_count.items()}
         ctx = {
@@ -101,12 +100,15 @@ class DetailsView(View):
                 }
             },
             'item': item,
-            'reviews': reviews
+            'reviews': reviews,
+            'keywords': keywords
         }
         return render(request, self.template, ctx)
 
 
 class CommentCreateView(LoginRequiredMixin, View):
+    searcher = apps.get_app_config("home").review_searcher
+
     def post(self, request, asin):
         comment = Review(
             item=Item.objects.get(asin=asin),
@@ -118,13 +120,17 @@ class CommentCreateView(LoginRequiredMixin, View):
             helpful_votes=0
         )
         comment.save()
+        self.searcher.add_object(comment)
         return redirect(reverse('home:details', args=[asin]))
 
 
 class CommentDeleteView(LoginRequiredMixin, View):
+    searcher = apps.get_app_config("home").review_searcher
+
     def post(self, request, asin):
         reviews = Review.objects.filter(id=request.POST.get('review_id'))
         for review in reviews:
             if self.request.user == review.author:
+                self.searcher.remove_object(review)
                 review.delete()
         return redirect(reverse('home:details', args=[asin]))

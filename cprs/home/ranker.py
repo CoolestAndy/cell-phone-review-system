@@ -6,18 +6,42 @@ class Ranker:
         self.k1 = k1
         self.k2 = k2
 
-    def make_inverted_index(self, documents: [str]):
+    def make_inverted_index(self, documents: [str], document_ids: [str]):
         document_terms = [nltk.word_tokenize(document.lower()) for document in documents]
-        self.doc_term_count = [Counter(terms) for terms in document_terms]
+        self.doc_term_count = {
+            document_ids[i]: Counter(terms)
+            for i, terms in enumerate(document_terms)
+        }
         self.doc_count = Counter()
         for terms in document_terms:
             for term in set(terms):
                 self.doc_count[term] += 1
-        self.doc_size = [len(terms) for terms in document_terms]
-        self.avg_dl = sum(len(document) for document in documents) / len(documents)
+        self.doc_size = {
+            document_ids[i]: len(terms)
+            for i, terms in enumerate(document_terms)
+        }
+        self.total_dl = sum(len(document) for document in documents)
         self.num_docs = len(documents)
 
-    def score(self, document_idx: int, query: str):
+    def add_document(self, document: str, document_id: str):
+        terms = nltk.word_tokenize(document.lower())
+        self.doc_term_count[document_id] = Counter(terms)
+        for term in set(terms):
+            self.doc_count[term] += 1
+        self.doc_size[document_id] = len(terms)
+        self.total_dl += len(document)
+        self.num_docs += 1
+
+    def remove_document(self, document: str, document_id: str):
+        terms = nltk.word_tokenize(document.lower())
+        del self.doc_term_count[document_id]
+        for term in set(terms):
+            self.doc_count[term] -= 1
+        del self.doc_size[document_id]
+        self.total_dl -= len(document)
+        self.num_docs -= 1
+
+    def score(self, document_id: str, query: str):
         """
         You need to override this function to return a score for a single term.
 
@@ -34,11 +58,12 @@ class Ranker:
         sd.doc_unique_terms: number of unique terms in the current document
         """
         query = nltk.word_tokenize(query.lower())
-        doc_term_count = sum(self.doc_term_count[document_idx][term] for term in query)
-        doc_size = self.doc_size[document_idx]
+        doc_term_count = sum(self.doc_term_count[document_id][term] for term in query)
+        doc_size = self.doc_size[document_id]
         doc_count = sum(self.doc_count[term] for term in query)
+        avg_dl = self.total_dl / self.num_docs
         query_term_weight = len(query)
 
-        TF = doc_term_count / (doc_term_count + 0.5 + self.k1 * doc_size / self.avg_dl)
+        TF = doc_term_count / (doc_term_count + 0.5 + self.k1 * doc_size / avg_dl)
         IDF = (self.num_docs / doc_count) ** self.k2 if doc_count > 0 else 0
         return TF * IDF * query_term_weight
