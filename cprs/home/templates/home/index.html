@@ -101,7 +101,7 @@
 <div class="gallery" id="products">
     {% for item in items %}
         <div>
-            <a class="img-link" href="{% url 'home:details' item.asin %}"><img src="{{ item.image }}" alt="{{ item.title }}"></a>
+            <a class="img-link" href="{% url 'home:details' item.asin %}"><img src="{{ item.image.url }}" alt="{{ item.title }}"></a>
             <a href="{% url 'home:details' item.asin %}">{{ item.title }}</a>
             {% if item.min_price is not None and item.max_price is not None %}
                 <p><b>Price</b>: ${{ item.min_price }} - ${{ item.max_price }}</p>

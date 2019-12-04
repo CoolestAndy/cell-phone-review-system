@@ -14,6 +14,10 @@ class Rating(models.Model):
     )
 
 
+class Image(models.Model):
+    url = models.URLField()
+
+
 class Carrier(models.Model):
     CANDIDATES = ['Unlocked', 'AT&T', 'T-Mobile', 'Mint', 'Verizon', 'Sprint', 'MetroPCS', 'Cricket', 'H2O']
     name = models.CharField(max_length=10)
@@ -25,7 +29,7 @@ class Item(models.Model):
     carrier = models.ForeignKey(Carrier, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     url = models.URLField()
-    image = models.URLField()
+    image = models.ForeignKey(Image, on_delete=models.CASCADE)
     ratings = models.ManyToManyField(Rating, through='Review')
     average_rating = models.DecimalField(max_digits=2, decimal_places=1)
     total_reviews = models.IntegerField()

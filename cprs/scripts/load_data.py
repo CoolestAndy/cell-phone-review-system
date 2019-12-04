@@ -21,6 +21,7 @@ def run():
             brand, _ = Brand.objects.get_or_create(name=row[1])
             carriers = [carrier for carrier in Carrier.CANDIDATES if carrier.replace('-', '').lower() in row[2].replace('-', '').lower()]
             carrier, _ = Carrier.objects.get_or_create(name=carriers[0] if carriers else 'Unlocked')
+            image, _ = Image.objects.get_or_create(url=row[4])
             prices = [float(price.replace('$', '')) for price in row[8].split(',') if price]
             Item.objects.create(
                 asin=row[0],
@@ -28,7 +29,7 @@ def run():
                 carrier=carrier,
                 title=row[2],
                 url=row[3],
-                image=row[4],
+                image=image,
                 average_rating=row[5],
                 total_reviews=row[7],
                 min_price=min(prices) if prices else None,
