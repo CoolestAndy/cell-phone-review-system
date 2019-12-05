@@ -10,12 +10,10 @@ class HomeConfig(AppConfig):
     review_searcher = None
 
     def ready(self):
-        import nltk
         from .models import Item, Review
         from .searcher import ItemSearcher, ReviewSearcher
         print("Initializing search engine...")
         try:
-            nltk.download('punkt')
             self.item_searcher = ItemSearcher(Item.objects.all())
             self.review_searcher = ReviewSearcher(Review.objects.all())
             print("Initialization done.")

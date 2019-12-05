@@ -1,13 +1,30 @@
 from collections import Counter
 import nltk
+from spellchecker import SpellChecker
+
+nltk.download('punkt')
+nltk.download('wordnet')
+
+
+class Tokenizer:
+    wnl = nltk.stem.WordNetLemmatizer()
+    spell = SpellChecker()
+
+    def tokenize(self, document: str, fuzzy=False):
+        tokens = [self.wnl.lemmatize(token) for token in nltk.word_tokenize(document.lower())]
+        if fuzzy:
+            tokens = [self.spell.correction(token) for token in tokens]
+        return tokens
+
 
 class Ranker:
     def __init__(self, k1=0.5, k2=0.35):
         self.k1 = k1
         self.k2 = k2
+        self.tokenizer = Tokenizer()
 
     def make_inverted_index(self, documents: [str], document_ids: [str]):
-        document_terms = [nltk.word_tokenize(document.lower()) for document in documents]
+        document_terms = [self.tokenizer.tokenize(document) for document in documents]
         self.doc_term_count = {
             document_ids[i]: Counter(terms)
             for i, terms in enumerate(document_terms)
@@ -24,7 +41,7 @@ class Ranker:
         self.num_docs = len(documents)
 
     def add_document(self, document: str, document_id: str):
-        terms = nltk.word_tokenize(document.lower())
+        terms = self.tokenizer.tokenize(document)
         self.doc_term_count[document_id] = Counter(terms)
         for term in set(terms):
             self.doc_count[term] += 1
@@ -33,7 +50,7 @@ class Ranker:
         self.num_docs += 1
 
     def remove_document(self, document: str, document_id: str):
-        terms = nltk.word_tokenize(document.lower())
+        terms = self.tokenizer.tokenize(document)
         del self.doc_term_count[document_id]
         for term in set(terms):
             self.doc_count[term] -= 1
@@ -57,7 +74,7 @@ class Ranker:
         sd.doc_size: total number of terms in the current document
         sd.doc_unique_terms: number of unique terms in the current document
         """
-        query = nltk.word_tokenize(query.lower())
+        query = self.tokenizer.tokenize(query, fuzzy=True)
         doc_term_count = sum(self.doc_term_count[document_id][term] for term in query)
         doc_size = self.doc_size[document_id]
         doc_count = sum(self.doc_count[term] for term in query)
