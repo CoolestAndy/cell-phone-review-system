@@ -1,17 +1,35 @@
 from collections import Counter
 import nltk
+from tqdm import tqdm
 from spellchecker import SpellChecker
 
 nltk.download('punkt')
 nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
 
 
 class Tokenizer:
     wnl = nltk.stem.WordNetLemmatizer()
     spell = SpellChecker()
 
+    def tokenize_batch(self, documents: [str]):
+        print('Tokenizing...')
+        tokens = [nltk.word_tokenize(document.lower()) for document in tqdm(documents)]
+        print('Analyzing pos tags...')
+        pos_tags = nltk.pos_tag_sents(tqdm(tokens))
+        print('Lemmatizing...')
+        return [
+            [self.wnl.lemmatize(word, tag[0].lower()) if tag[0].lower() in {'a', 'r', 'n', 'v'} else word
+             for word, tag in pos_tag]
+            for pos_tag in tqdm(pos_tags)
+        ]
+
     def tokenize(self, document: str, fuzzy=False):
-        tokens = [self.wnl.lemmatize(token) for token in nltk.word_tokenize(document.lower())]
+        tokens = nltk.word_tokenize(document.lower())
+        tokens = [
+            self.wnl.lemmatize(word, tag[0].lower()) if tag[0].lower() in {'a', 'r', 'n', 'v'} else word
+            for word, tag in nltk.pos_tag(tokens)
+        ]
         if fuzzy:
             tokens = [self.spell.correction(token) for token in tokens]
         return tokens
@@ -24,7 +42,7 @@ class Ranker:
         self.tokenizer = Tokenizer()
 
     def make_inverted_index(self, documents: [str], document_ids: [str]):
-        document_terms = [self.tokenizer.tokenize(document) for document in documents]
+        document_terms = self.tokenizer.tokenize_batch(documents)
         self.doc_term_count = {
             document_ids[i]: Counter(terms)
             for i, terms in enumerate(document_terms)
