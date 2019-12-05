@@ -1,38 +1,20 @@
 from collections import Counter
 import nltk
 from tqdm import tqdm
-from spellchecker import SpellChecker
+from pattern.en import lemma
 
 nltk.download('punkt')
-nltk.download('wordnet')
-nltk.download('averaged_perceptron_tagger')
+try:
+    # This is a bug of pattern library in Python 3.7
+    # When function `lemma` is called for the first time, a StopIteration exception will be thrown
+    lemma("")
+except:
+    pass
 
 
 class Tokenizer:
-    wnl = nltk.stem.WordNetLemmatizer()
-    spell = SpellChecker()
-
-    def tokenize_batch(self, documents: [str]):
-        print('Tokenizing...')
-        tokens = [nltk.word_tokenize(document.lower()) for document in tqdm(documents)]
-        print('Analyzing pos tags...')
-        pos_tags = nltk.pos_tag_sents(tqdm(tokens))
-        print('Lemmatizing...')
-        return [
-            [self.wnl.lemmatize(word, tag[0].lower()) if tag[0].lower() in {'a', 'r', 'n', 'v'} else word
-             for word, tag in pos_tag]
-            for pos_tag in tqdm(pos_tags)
-        ]
-
-    def tokenize(self, document: str, fuzzy=False):
-        tokens = nltk.word_tokenize(document.lower())
-        tokens = [
-            self.wnl.lemmatize(word, tag[0].lower()) if tag[0].lower() in {'a', 'r', 'n', 'v'} else word
-            for word, tag in nltk.pos_tag(tokens)
-        ]
-        if fuzzy:
-            tokens = [self.spell.correction(token) for token in tokens]
-        return tokens
+    def tokenize(self, document: str):
+        return [lemma(token.lower()) for token in nltk.word_tokenize(document)]
 
 
 class Ranker:
@@ -42,7 +24,7 @@ class Ranker:
         self.tokenizer = Tokenizer()
 
     def make_inverted_index(self, documents: [str], document_ids: [str]):
-        document_terms = self.tokenizer.tokenize_batch(documents)
+        document_terms = [self.tokenizer.tokenize(document) for document in tqdm(documents)]
         self.doc_term_count = {
             document_ids[i]: Counter(terms)
             for i, terms in enumerate(document_terms)
@@ -92,7 +74,7 @@ class Ranker:
         sd.doc_size: total number of terms in the current document
         sd.doc_unique_terms: number of unique terms in the current document
         """
-        query = self.tokenizer.tokenize(query, fuzzy=True)
+        query = self.tokenizer.tokenize(query)
         doc_term_count = sum(self.doc_term_count[document_id][term] for term in query)
         doc_size = self.doc_size[document_id]
         doc_count = sum(self.doc_count[term] for term in query)

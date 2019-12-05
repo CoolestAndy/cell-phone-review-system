@@ -3,4 +3,4 @@ django-extensions==2.2.5
 social-auth-app-django==3.1.0
 nltk==3.4.5
 tqdm==4.40.0
-pyspellchecker==0.5.3
+pattern==3.6
