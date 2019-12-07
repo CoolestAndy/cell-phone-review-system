@@ -28,7 +28,6 @@ For the fourth image, it is our detail page when you click on the phone image in
 ![image 1](docs/img/ui-design-1.png)
 ![image 2](docs/img/ui-design-2.png)
 ![image 3](docs/img/ui-design-3.png)
-![image 4](docs/img/ui-design-4.png)
 
 ## Data Models
 
