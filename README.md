@@ -63,8 +63,19 @@ For the fourth image, it is our detail page when you click on the phone image in
 
       Please note the difference between **http** and **https**. If your server is connected using `https` protocol, please replace all `http` in the address with `https`. Using the wrong protocol will result in failure to log in.
 4. Copy `Client ID` and `Client Secret` to `cprs/cprs/github_settings.py`.
-5. Start server in debug mode.
+5. Load data from dataset.
+    ```bash
+    python manage.py runscript load_data
+    ```
+
+6. Start server in debug mode.
 
     ```bash
     python manage.py runserver 0.0.0.0:8000
     ```
+7. (Optional) Login to system to write your own reviews.
+    This system doesn't have `Sign up` function , you need to create account in localhost or your server.
+    ```bash
+    python manage.py createsuperuser
+    ```
+    After signing up your account, you can login this system to leave comments.
